@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portail Santé Diabète</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: url('https://images.unsplash.com/photo-1588776814546-ec7e8fc05ce7?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      animation: fadeInBody 2s ease-in-out;
+    }
+    #subscriptionModal {
+      display: none;
+    }
+    #subscriptionModal.active {
+      display: flex;
+    }
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeInBody {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+  <script>
+    function calculateInsulin() {
+      const sugarLevel = parseFloat(document.getElementById("sugarInput").value);
+      let insulinDose = 0;
+      if (!isNaN(sugarLevel)) {
+        if (sugarLevel < 100) {
+          insulinDose = 0;
+        } else if (sugarLevel < 180) {
+          insulinDose = (sugarLevel - 100) * 0.1;
+        } else {
+          insulinDose = (sugarLevel - 100) * 0.15;
+        }
+        document.getElementById("insulinResult").textContent = `Dose d'insuline recommandée : ${insulinDose.toFixed(2)} unités`;
+      } else {
+        document.getElementById("insulinResult").textContent = "Veuillez entrer un nombre valide.";
+      }
+    }
+
+    function showSubscriptionModal() {
+      const modal = document.getElementById("subscriptionModal");
+      modal.classList.add("active", "fade-in");
+    }
+
+    function closeSubscriptionModal() {
+      document.getElementById("subscriptionModal").classList.remove("active", "fade-in");
+    }
+
+    // Fonction pour filtrer les médecins en fonction de la catégorie
+    function filterDoctorsByCategory() {
+      const selectedCategory = document.getElementById("categorie").value;
+      const allDoctors = document.querySelectorAll(".doctor-item");
+      allDoctors.forEach(function(doctor) {
+        const doctorCategory = doctor.getAttribute("data-category");
+        if (selectedCategory === "tous" || doctorCategory === selectedCategory) {
+          doctor.style.display = "flex";
+        } else {
+          doctor.style.display = "none";
+        }
+      });
+    }
+  </script>
+</head>
+<body class="font-sans text-white bg-cover bg-center">
+  <div class="text-center py-12 px-4 md:px-12 bg-black bg-opacity-60 animate-fadeIn">
+    <h1 class="text-4xl font-bold mb-4">Bienvenue sur notre Portail Santé Diabète</h1>
+    <p class="text-lg max-w-3xl mx-auto">Ce portail est conçu pour faciliter la vie des personnes atteintes de diabète. Vous pouvez consulter des médecins spécialisés et calculer votre dose d'insuline selon votre glycémie.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-8">
+    <!-- Infos de contact et autres -->
+    <div class="bg-white bg-opacity-90 rounded-2xl shadow-lg p-6 text-gray-800">
+      <h2 class="text-2xl font-bold mb-4">Contact & Informations</h2>
+      <ul class="space-y-2">
+        <li><strong>Email :</strong> contact@diabete-sante.fr</li>
+        <li><strong>Téléphone :</strong> +33 1 23 45 67 89</li>
+        <li><strong>Adresse :</strong> 123 Rue de la Santé, Paris</li>
+        <li class="flex items-center space-x-4 mt-4">
+          <span><strong>Réseaux Sociaux :</strong></span>
+          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" class="w-6 h-6" /></a>
+          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram" class="w-6 h-6" /></a>
+          <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" class="w-6 h-6" /></a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Section Consultation -->
+    <div class="bg-white bg-opacity-90 rounded-2xl shadow-lg p-6 text-gray-800">
+      <h2 class="text-2xl font-bold mb-4 text-green-600">Consulter un Médecin</h2>
+      <label for="categorie" class="block mb-2 font-medium">Choisir une catégorie :</label>
+      <select id="categorie" class="mb-4 p-2 border rounded w-full" onchange="filterDoctorsByCategory()">
+        <option value="tous">Tous</option>
+        <option value="diabetologue">Diabétologue</option>
+        <option value="endocrinologue">Endocrinologue</option>
+        <option value="nutritionniste">Nutritionniste</option>
+      </select>
+      <p class="mb-4">Trouvez un spécialiste et prenez rendez-vous :</p>
+      <ul class="space-y-3">
+        <li class="doctor-item flex items-center justify-between bg-gray-100 p-3 rounded" data-category="endocrinologue">
+          <span class="font-medium">Dr Amina Rahmani - Endocrinologue</span>
+          <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Consulter</button>
+        </li>
+        <li class="doctor-item flex items-center justify-between bg-gray-100 p-3 rounded" data-category="diabetologue">
+          <span class="font-medium">Dr Khaled Bensalem - Diabétologue</span>
+          <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Consulter</button>
+        </li>
+        <li class="doctor-item flex items-center justify-between bg-gray-100 p-3 rounded" data-category="nutritionniste">
+          <span class="font-medium">Dr Yasmine Belkacem - Nutritionniste</span>
+          <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Consulter</button>
+        </li>
+        <li class="text-gray-600 italic mt-6">Les médecins peuvent payer pour être affichés ici. <a href="#" onclick="showSubscriptionModal()" class="text-blue-500 underline">Rejoindre maintenant</a></li>
+      </ul>
+    </div>
+
+    <!-- Section Calculatrice d'insuline -->
+    <div class="col-span-1 md:col-span-2 bg-white bg-opacity-90 rounded-2xl shadow-lg p-6 mt-6 text-gray-800">
+      <h2 class="text-2xl font-bold mb-4 text-blue-600">Calculateur de Glycémie et d'Insuline</h2>
+      <label class="block mb-2">Entrez votre taux de glycémie (mg/dL) :</label>
+      <input id="sugarInput" type="number" class="w-full p-2 border rounded mb-4" placeholder="ex : 150" />
+      <button onclick="calculateInsulin()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Calculer</button>
+      <p id="insulinResult" class="mt-4 text-green-600 font-medium"></p>
+    </div>
+  </div>
+
+  <!-- Modal Abonnement -->
+  <div id="subscriptionModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md mx-auto fade-in text-gray-800">
+      <h3 class="text-xl font-bold mb-4">Abonnement Médecin</h3>
+      <p class="mb-4">Choisissez votre plan d'abonnement :</p>
+      <ul class="space-y-3 mb-4">
+        <li class="flex justify-between border p-3 rounded">
+          <span>Basique - 10€/mois</span>
+          <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Payer</button>
+        </li>
+        <li class="flex justify-between border p-3 rounded">
+          <span>Premium - 25€/mois</span>
+          <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Payer</button>
+        </li>
+      </ul>
+      <button onclick="closeSubscriptionModal()" class="text-red-500 underline">Annuler</button>
+    </div>
+  </div>
+</body>
+</html>
